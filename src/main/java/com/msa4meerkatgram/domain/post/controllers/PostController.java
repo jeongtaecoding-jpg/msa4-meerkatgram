@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class PostController {
+
+    // 이게 가장 먼저 실행이 됨!!! 이후 PostIndexReq으로 감!
+
     private final PostService postService;
 
     @GetMapping("/posts")
