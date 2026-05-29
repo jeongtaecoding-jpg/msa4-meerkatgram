@@ -15,6 +15,14 @@ import java.util.Optional;
 public class CookieManager {
     private final JwtConfig jwtConfig;
 
+    /**
+     * Request Header에서 특정 쿠키를 획득 (Optional 반환)
+     * @param request  리퀘스트
+     * @param name  찾고자하는 쿠키명
+     * @return
+     * @throws Exception
+     */
+
     // Request Header에서 특정 쿠키를 획득(Optional 반환)
     public Optional<Cookie> getCookie(HttpServletRequest request, String name) {    // 트러블 슈팅 : HttpServletRequest와  HttpServletResponse 혼동 금지!
         // 쿠키 존재 여부 확인
