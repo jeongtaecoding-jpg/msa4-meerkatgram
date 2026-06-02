@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -54,8 +55,8 @@ public class AuthService {
         // 유저 획득
         User user = userMapper.findByPk(id);     // 질문 : User.java에서 바로 가져오지 않고 Mapper를 따로 만들어 두번 나눠 가져오는 이유가 무엇입니까?
                                                  // 답변 : 파라미터만 전달해 주어서 딱히 id가 아니어도 관계없음(User.java에 있는 거 아님! 위의 long id임)
-        // 유저 가입 여부 확인
-        if(user == null) {
+        // 유저 가입 여부 확인 및 비로그인 상태 확인
+        if(user == null || user.getRefreshToken() == null) {
             throw new InvalidTokenException("유효하지 않은 회원의 토큰입니다.");
         }
 
@@ -102,4 +103,25 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void logout(HttpServletResponse response, long id) {
+
+        // 유저 정보 획득
+        User user = userMapper.findByPk(id);
+
+        if (user == null)
+            throw new InvalidTokenException("유효하지 않은 회원의 토큰입니다.");
+
+        // DB에 저장된 refresh 토큰 파기
+        authMapper.updateRefreshToken(user.getId(), null);
+
+        // Cookie에 저장된 refresh 토큰 파기
+        cookieManager.setCookie(
+                response
+                , jwtConfig.refreshTokenCookieName()
+                , null
+                , 0
+                , jwtConfig.reissUri()
+        );
+    }
 }
