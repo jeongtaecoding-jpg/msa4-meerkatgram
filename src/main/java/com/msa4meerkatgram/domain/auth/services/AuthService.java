@@ -2,18 +2,23 @@ package com.msa4meerkatgram.domain.auth.services;
 
 import com.msa4meerkatgram.domain.auth.mapper.AuthMapper;
 import com.msa4meerkatgram.domain.auth.requests.LoginReq;
+import com.msa4meerkatgram.domain.auth.requests.RegistrationReq;
 import com.msa4meerkatgram.domain.auth.responses.AuthRes;
 import com.msa4meerkatgram.domain.user.entities.User;
 import com.msa4meerkatgram.domain.user.mapper.UserMapper;
 import com.msa4meerkatgram.domain.user.responses.UserRes;
+import com.msa4meerkatgram.global.errors.custom.DuplicatedRecordException;
 import com.msa4meerkatgram.global.errors.custom.InvalidTokenException;
 import com.msa4meerkatgram.global.errors.custom.NotRegisteredException;
+import com.msa4meerkatgram.global.security.constant.ProviderPolicy;
+import com.msa4meerkatgram.global.security.constant.RolePolicy;
 import com.msa4meerkatgram.global.security.cookie.CookieManager;
 import com.msa4meerkatgram.global.security.jwt.JwtConfig;
 import com.msa4meerkatgram.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +32,7 @@ public class AuthService {
     private final AuthMapper authMapper;
     private final CookieManager cookieManager;
     private final JwtConfig jwtConfig;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthRes login(HttpServletResponse response, LoginReq loginReq) {
     // 유저정보 획득
@@ -123,5 +129,24 @@ public class AuthService {
                 , 0
                 , jwtConfig.reissUri()
         );
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void registration(RegistrationReq registrationReq) {
+        // 유저 정보 획득
+        User user = userMapper.findByEmail(registrationReq.email());
+
+        if(user != null) {
+            throw new DuplicatedRecordException("이미 가입된 회원입니다.");
+        }
+
+        User newUser = new User();
+        newUser.setEmail(registrationReq.email());
+        newUser.setPassword(passwordEncoder.encode(registrationReq.password()));  // 패스워드 암호화
+        newUser.setNick(registrationReq.nick());
+        newUser.setProfile(registrationReq.profile());
+        newUser.setProvider(ProviderPolicy.NONE.getProvider());
+        newUser.setRole(RolePolicy.NORMAL.getRole());
+        authMapper.create(newUser);
     }
 }
