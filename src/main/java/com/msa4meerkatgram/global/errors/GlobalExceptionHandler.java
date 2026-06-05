@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -124,6 +125,18 @@ public class GlobalExceptionHandler {
                         .code("E40")
                         .message("파일 업로드 실패")
                         .data(e.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<GlobalRes<String>> sqlHandle(SQLException e) {
+        log.error("DB 에러", e);
+        return ResponseEntity.status(500).body(
+                GlobalRes.<String>builder()
+                        .code("E80")
+                        .message("DB 에러")
+                        .data("현재 서비스 이용이 불가능합니다. 잠시 후 다시 시도해 주십시오.")
                         .build()
         );
     }
