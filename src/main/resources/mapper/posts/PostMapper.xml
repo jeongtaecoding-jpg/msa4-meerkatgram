@@ -33,7 +33,7 @@
             deleted_at IS NULL
     </select>
 
-    <select id="findByPk" resultMap="postResultMap" >
+    <select id="findByPk" resultMap="postResultMap">
         SELECT
             *
         FROM posts
@@ -50,4 +50,7 @@
               deleted_at IS NULL
           AND user_id = #{userId}
     </select>
+
+
+
 </mapper>

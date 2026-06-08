@@ -49,4 +49,17 @@ public class PostController {
                         .build()
         );
     }
+
+    // @GetMapping("/posts/create")
+    // public ResponseEntity<GlobalRes<Post>> PostCreate(
+    //
+    // ) {
+    //
+    //     return ResponseEntity.status(200).body(
+    //             GlobalRes.<Post>builder()
+    //                     .code("00")
+    //                     .message("게시글 상세 정상 처리")
+    //                     .build()
+    //     );
+    // }
 }
