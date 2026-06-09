@@ -57,6 +57,8 @@ public class AuthController {
             , @AuthenticationPrincipal Claims claims
     ) {
         authService.logout(response, Long.parseLong(claims.getSubject()));
+        // parse : 작성된 코드나 일련의 문자열을 컴퓨터가 이해할 수 있는 단위(토큰)로 쪼개고,
+        // 정해진 문법 규칙에 따라 의미를 분석하여 구조화(여기선 long 형태)하는 과정(파싱, Parsing)
 
         return ResponseEntity.status(200).body(
                 GlobalRes.<String>builder()

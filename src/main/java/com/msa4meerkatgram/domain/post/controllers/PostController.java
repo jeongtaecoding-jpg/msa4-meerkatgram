@@ -2,16 +2,16 @@ package com.msa4meerkatgram.domain.post.controllers;
 
 import com.msa4meerkatgram.domain.post.entities.Post;
 import com.msa4meerkatgram.domain.post.requests.PostIndexReq;
+import com.msa4meerkatgram.domain.post.requests.PostStoreReq;
 import com.msa4meerkatgram.domain.post.responses.PostIndexRes;
 import com.msa4meerkatgram.domain.post.services.PostService;
 import com.msa4meerkatgram.global.responses.GlobalRes;
+import io.jsonwebtoken.Claims;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,16 +50,23 @@ public class PostController {
         );
     }
 
-    // @GetMapping("/posts/create")
-    // public ResponseEntity<GlobalRes<Post>> PostCreate(
-    //
-    // ) {
-    //
-    //     return ResponseEntity.status(200).body(
-    //             GlobalRes.<Post>builder()
-    //                     .code("00")
-    //                     .message("게시글 상세 정상 처리")
-    //                     .build()
-    //     );
-    // }
+    @PostMapping("/posts/create")
+    public ResponseEntity<GlobalRes<Post>> PostCreate(
+            @RequestBody PostStoreReq storeReq, //   뷰에서 보낸 내용과 이미지
+            @AuthenticationPrincipal Claims claims // // 토큰에서 꺼낸 로그인 정보
+    ) {
+        // 2. 토큰(claims)에서 유저 ID를 뽑아냅니다.
+        Long userId = Long.parseLong(claims.getSubject());
+
+        // 3. 서비스로 '유저ID, 내용, 이미지' 3가지를 정확히 전달합니다.
+        Post savedPost = postService.create(userId, storeReq.content(), storeReq.image());
+
+        return ResponseEntity.status(200).body(
+                GlobalRes.<Post>builder()
+                        .code("00")
+                        .message("게시글 작성 완료")
+                        .data(savedPost) // 4. 응답 데이터에 방금 저장된 게시글 정보를 함께 보내줍니다.
+                        .build()
+        );
+    }
 }

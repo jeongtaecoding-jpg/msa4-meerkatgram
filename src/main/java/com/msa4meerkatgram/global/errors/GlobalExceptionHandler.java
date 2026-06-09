@@ -64,6 +64,7 @@ public class GlobalExceptionHandler {
         );
     }
 
+
     @ExceptionHandler(DeletedRecordException.class)
     public ResponseEntity<GlobalRes<String>> deletedRecordException(DeletedRecordException e) {
         return ResponseEntity.status(404).body(
@@ -153,3 +154,6 @@ public class GlobalExceptionHandler {
         );
     }
 }
+
+
+// ctrl + A : 전체 선택
