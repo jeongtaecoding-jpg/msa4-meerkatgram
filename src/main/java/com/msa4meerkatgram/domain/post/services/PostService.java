@@ -47,27 +47,27 @@ public class PostService {
         return post;
     }
 
-    // 1. 파라미터 정리: 진짜 필요한 정보만 받기 (예: 작성자 ID, 게시글 제목, 내용 등)
+    // 파라미터 정리: 진짜 필요한 정보만 받기 (예: 작성자 ID, 게시글 제목, 내용 등)
     // 컨트롤러에서 넘어온 User ID가 Long 타입일 수 있으니 래퍼 클래스를 쓰거나 필수 검증을 합니다.
     public Post create(Long userId, String content, String image) {
 
-        // 2. 유저 정보 검증 (필수 사항: 진짜 유저가 맞는지 확인하고 싶다면 UserMapper 사용)
+        // 1단계: 방어 로직. 토큰 ID로 유저를 조회했는데 DB에 없으면(탈퇴 등)
         User user = userMapper.findByPk(userId);
         if (user == null) {
             throw new AccessDeniedException("유저가 아닙니다.");
         }
 
-        // 3. 새로운 게시글(Post) 객체 만들기
+        // 2단계: 데이터베이스 테이블 모양과 똑같이 생긴 Post 엔티티 객체를 빌더 패턴으로 생성
         Post newPost = Post.builder()
                 .userId(userId)
                 .content(content)
                 .image(image) // 엔티티 필드명과 동일하게 맞추세요
                 .build();
 
-        // 4. 데이터베이스에 저장 (insert)
+        // 3단계: Mybatis 매퍼를 통해 실제 DB에 Insert 쿼리 실행
         postMapper.create(newPost); // 매퍼에 insert 관련 쿼리가 있어야 합니다.
 
-        // 5. 저장된 결과 반환
+        // 4단계 : 저장된 결과를 다시 돌려줌 (컨트롤러가 받아서 화면으로 보냄)
         return newPost;
     }
 

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     // 이게 가장 먼저 실행이 됨!!! 이후 PostIndexReq으로 감!
-
     private final PostService postService;
 
     @GetMapping("/posts")
@@ -52,15 +51,19 @@ public class PostController {
 
     @PostMapping("/posts/create")
     public ResponseEntity<GlobalRes<Post>> PostCreate(
+            // @RequestBody: "프론트가 보낸 JSON 덩어리를 PostCreateReq 그릇에 알아서 담아줘!"
             @RequestBody PostStoreReq storeReq, //   뷰에서 보낸 내용과 이미지
+
+            // 문지기(JwtFilter)가 토큰을 검사하고 열어준 유저 정보(Claims)를 주입받음
             @AuthenticationPrincipal Claims claims // // 토큰에서 꺼낸 로그인 정보
     ) {
-        // 2. 토큰(claims)에서 유저 ID를 뽑아냅니다.
+        // 토큰에서 로그인한 유저의 고유 ID를 뽑아냄 (더 이상 프론트에서 ID를 받지 않아 안전함)
         Long userId = Long.parseLong(claims.getSubject());
 
-        // 3. 서비스로 '유저ID, 내용, 이미지' 3가지를 정확히 전달합니다.
+        // 서비스(핵심 업무)로 유저 ID와 DTO에 담긴 글, 사진 주소를 넘겨서 저장을 지시함
         Post savedPost = postService.create(userId, storeReq.content(), storeReq.image());
 
+        // 약속된 포맷(코드, 메시지, 데이터)으로 HTTP 상태 200과 함께 성공 응답을 내려줌
         return ResponseEntity.status(200).body(
                 GlobalRes.<Post>builder()
                         .code("00")
