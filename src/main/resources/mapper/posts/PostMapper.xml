@@ -33,7 +33,7 @@
             deleted_at IS NULL
     </select>
 
-    <select id="findByPk" resultMap="postResultMap" >
+    <select id="findByPk" resultMap="postResultMap">
         SELECT
             *
         FROM posts
@@ -50,4 +50,25 @@
               deleted_at IS NULL
           AND user_id = #{userId}
     </select>
+
+
+    <!-- 기본값이 이미 있는 건 굳이 넣어줄 필요 없다. -->
+    <!-- ParameterType은 굳이 풀네임(com.msa4meerkatgram.domain.post.entities.Post)을 넣을 필요없다. -->
+    <insert
+            id="create"
+            parameterType="Post"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO posts(
+                           user_id,
+                           content,
+                           image
+        ) VALUES (
+                  #{userId}
+                 ,#{content}
+                 ,#{image}
+                 )
+    </insert>
+
 </mapper>

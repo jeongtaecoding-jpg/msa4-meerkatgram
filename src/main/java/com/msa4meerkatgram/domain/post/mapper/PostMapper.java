@@ -11,4 +11,10 @@ public interface PostMapper {
     long getTotal();
     Post findByPk(long id);
     long countPostsByUserId(long userId);
-}
+
+    // List<Post> create(Post post); 오답!!!
+    // 수정됨: List<Post> 대신 int(성공한 행의 개수)를 사용
+    int create(Post post);
+
+   }
+
