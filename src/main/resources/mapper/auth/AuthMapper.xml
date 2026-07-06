@@ -7,7 +7,7 @@
 <!-- 꿀팁 : namespace 에 문자열을 넣을 때 ctrl + spacebar 를 누르면 자동생성 가능  -->
     <update
             id="updateRefreshToken"
-            parameterType="com.msa4meerkatgram.domain.user.entities.User"
+            parameterType="com.msa4meerkatgram.domain.user.entities.UserMybatis"
     >
         UPDATE users
         SET
@@ -19,7 +19,7 @@
 
     <insert
             id="create"
-            parameterType="com.msa4meerkatgram.domain.user.entities.User"
+            parameterType="com.msa4meerkatgram.domain.user.entities.UserMybatis"
             useGeneratedKeys="true"
             keyProperty="id"
     >

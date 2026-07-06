@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.msa4meerkatgram.domain.post.mapper.PostMapper">
-    <resultMap id="postResultMap" type="com.msa4meerkatgram.domain.post.entities.Post">
+    <resultMap id="postResultMap" type="com.msa4meerkatgram.domain.post.entities.PostMybatis">
         <id column="id" property="id" />
         <result column="user_id" property="userId" />
         <result column="content" property="content" />
@@ -25,7 +25,7 @@
         LIMIT #{offset}, #{limit}
     </select>
 
-    <select id="getTotal">
+    <select id="getTotal" resultType="long">
         SELECT
             COUNT(*)
         FROM posts
@@ -53,10 +53,10 @@
 
 
     <!-- 기본값이 이미 있는 건 굳이 넣어줄 필요 없다. -->
-    <!-- ParameterType은 굳이 풀네임(com.msa4meerkatgram.domain.post.entities.Post)을 넣을 필요없다. -->
+    <!-- ParameterType은 굳이 풀네임(com.msa4meerkatgram.domain.post.entities.PostMybatis)을 넣을 필요없다. -->
     <insert
             id="create"
-            parameterType="Post"
+            parameterType="com.msa4meerkatgram.domain.post.entities.PostMybatis"
             useGeneratedKeys="true"
             keyProperty="id"
     >
