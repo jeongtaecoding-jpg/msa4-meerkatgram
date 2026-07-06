@@ -1,6 +1,6 @@
 package com.msa4meerkatgram.domain.post.controllers;
 
-import com.msa4meerkatgram.domain.post.entities.Post;
+import com.msa4meerkatgram.domain.post.entities.PostMybatis;
 import com.msa4meerkatgram.domain.post.requests.PostIndexReq;
 import com.msa4meerkatgram.domain.post.requests.PostStoreReq;
 import com.msa4meerkatgram.domain.post.responses.PostIndexRes;
@@ -35,13 +35,13 @@ public class PostController {
     }
 
     @GetMapping("/posts/{id}")
-    public ResponseEntity<GlobalRes<Post>> show(
+    public ResponseEntity<GlobalRes<PostMybatis>> show(
         @Min(value = 1, message = "1이상 숫자만 허용합니다.") @PathVariable long id
     ) {
-        Post result = postService.show(id);
+        PostMybatis result = postService.show(id);
 
         return ResponseEntity.status(200).body(
-                GlobalRes.<Post>builder()
+                GlobalRes.<PostMybatis>builder()
                         .code("00")
                         .message("게시글 상세 정상 처리")
                         .data(result)
@@ -50,7 +50,7 @@ public class PostController {
     }
 
     @PostMapping("/posts/create")
-    public ResponseEntity<GlobalRes<Post>> PostCreate(
+    public ResponseEntity<GlobalRes<PostMybatis>> PostCreate(
             // @RequestBody: "프론트가 보낸 JSON 덩어리를 PostCreateReq 그릇에 알아서 담아줘!"
             @RequestBody PostStoreReq storeReq, //   뷰에서 보낸 내용과 이미지
 
@@ -61,11 +61,11 @@ public class PostController {
         Long userId = Long.parseLong(claims.getSubject());
 
         // 서비스(핵심 업무)로 유저 ID와 DTO에 담긴 글, 사진 주소를 넘겨서 저장을 지시함
-        Post savedPost = postService.create(userId, storeReq.content(), storeReq.image());
+        PostMybatis savedPost = postService.create(userId, storeReq.content(), storeReq.image());
 
         // 약속된 포맷(코드, 메시지, 데이터)으로 HTTP 상태 200과 함께 성공 응답을 내려줌
         return ResponseEntity.status(200).body(
-                GlobalRes.<Post>builder()
+                GlobalRes.<PostMybatis>builder()
                         .code("00")
                         .message("게시글 작성 완료")
                         .data(savedPost) // 4. 응답 데이터에 방금 저장된 게시글 정보를 함께 보내줍니다.
