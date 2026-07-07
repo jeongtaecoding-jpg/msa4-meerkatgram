@@ -26,9 +26,6 @@ public class Post {
     @Column(name = "id", columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
-    @Column(name = "user_id", columnDefinition = "BIGINT UNSIGNED")
-    private Long userId;
-
     @Column(name = "content", nullable = false, length = 200)
     private String content;
 
@@ -46,8 +43,8 @@ public class Post {
     @Column(name = "deleted_at", nullable = true)
     private LocalDateTime deletedAt;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)  // 지연 로딩(필요할 때 가져옴)
+    // Eager(즉시) 로딩은 불필요한 조인이 발생할 수 있다.
+    @ManyToOne(fetch = FetchType.EAGER)  //  LAZY : 지연 로딩(필요할 때 가져옴, N + 1 문제가 발생할 수 있음)
     @JoinColumn(
             name = "user_id"
             , insertable = true // INSERT할 때, user 객체에 어떤 값을 넣더라도, INSERT문에 `user_id`컬럼을 포함하겠다.
@@ -57,3 +54,5 @@ public class Post {
     )
     private User user;
 }
+
+// @ManyToOne(fetch = FetchType.LAZY) 지연 로딩으로 하면 에러가 난다.
