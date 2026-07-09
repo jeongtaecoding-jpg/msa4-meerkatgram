@@ -1,5 +1,6 @@
 package com.msa4meerkatgram.domain.user.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.msa4meerkatgram.global.security.constant.ProviderPolicy;
 import com.msa4meerkatgram.global.security.constant.RolePolicy;
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public class User {
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
@@ -65,5 +67,8 @@ public class User {
 
     @Column(name = "deleted_at", nullable = true)
     private LocalDateTime deletedAt;
+
+    // @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    // private List<Post> posts;
 }
 

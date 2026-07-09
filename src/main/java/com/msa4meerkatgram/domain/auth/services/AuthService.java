@@ -131,7 +131,7 @@ public class AuthService {
     @Transactional(rollbackFor = Exception.class)
     public void registration(RegistrationReq registrationReq) {
         // 유저 가입여부 확인(exist 쿼리를 사용하면 대용량 환경에서 효율이 증가)
-        if(authRepository.existByEmail(registrationReq.email())) {
+        if(authRepository.existsByEmail(registrationReq.email())) {
             throw new DuplicatedRecordException("이미 가입된 회원입니다.");
         }
 
