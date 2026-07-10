@@ -36,14 +36,8 @@ public class AuthController {
     public ResponseEntity<GlobalRes<AuthRes>> login(
            @Valid @RequestBody LoginReq loginReq
            , HttpServletResponse response
-            ) {
-          return ResponseEntity.status(200).body(
-                  GlobalRes.<AuthRes>builder()
-                          .code("00")
-                          .message("로그인 완료")
-                          .data(authService.login(response, loginReq))
-                          .build()
-          );
+    ) {
+        return ResponseEntity.ok(GlobalRes.success(authService.login(response, loginReq)));
     }
 
     @PostMapping("/reissue-token")
@@ -51,17 +45,20 @@ public class AuthController {
         HttpServletRequest request
         ,HttpServletResponse response
     ) {
-        return ResponseEntity.status(200).body(
-                GlobalRes.<AuthRes>builder()
-                        .code("00")
-                        .message("토큰 재발급 완료")
-                        .data(authService.reissue(request, response))
-                        .build()
-        );
+        return ResponseEntity.ok(GlobalRes.success(authService.reissue(request, response)));
+
+        // 원래는 코드들이 이런 식이었는데 간편하게 위의 return 코드들로 바꿈.
+//        return ResponseEntity.status(200).body(
+//                GlobalRes.<AuthRes>builder()
+//                        .code("00")
+//                        .message("토큰 재발급 완료")
+//                        .data(authService.reissue(request, response))
+//                        .build()
+//        );
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<GlobalRes<String>> logout(
+    public ResponseEntity<GlobalRes<Void>> logout(
             HttpServletResponse response
             , @AuthenticationPrincipal Claims claims
     ) {
@@ -69,26 +66,16 @@ public class AuthController {
         // parse : 작성된 코드나 일련의 문자열을 컴퓨터가 이해할 수 있는 단위(토큰)로 쪼개고,
         // 정해진 문법 규칙에 따라 의미를 분석하여 구조화(여기선 long 형태)하는 과정(파싱, Parsing)
 
-        return ResponseEntity.status(200).body(
-                GlobalRes.<String>builder()
-                        .code("00")
-                        .message("로그아웃 성공")
-                        .build()
-        );
+        return ResponseEntity.ok(GlobalRes.success());
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<GlobalRes<String>> registration(
+    public ResponseEntity<GlobalRes<Void>> registration(
             @Valid @RequestBody RegistrationReq registrationReq
             ) {
         authService.registration(registrationReq);
 
-        return ResponseEntity.status(200).body(
-                GlobalRes.<String>builder()
-                        .code("00")
-                        .message("회원가입 완료")
-                        .build()
-        );
+        return ResponseEntity.ok(GlobalRes.success());
     }
 
 }
