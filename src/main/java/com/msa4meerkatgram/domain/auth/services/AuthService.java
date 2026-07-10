@@ -37,7 +37,6 @@ public class AuthService {
         User user = authRepository.findByEmail(loginReq.email())
                 .orElseThrow(() -> new NotRegisteredException("아이디와 비밀번호를 확인해주세요."));
 
-
     // 비밀번호 체크
     if(!passwordEncoder.matches((loginReq.password()), user.getPassword())) {
         throw new NotRegisteredException("아이디와 비밀번호를 입력해주세요.");
