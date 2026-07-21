@@ -1,5 +1,6 @@
 package com.msa4meerkatgram.domain.user.controllers;
 
+import com.msa4meerkatgram.domain.user.repositories.UserRepository;
 import com.msa4meerkatgram.domain.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
     // @GetMapping("/test")
     // public ResponseEntity<GlobalRes<AuthRes>> test() {

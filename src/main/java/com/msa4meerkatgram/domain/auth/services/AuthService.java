@@ -37,7 +37,6 @@ public class AuthService {
         User user = authRepository.findByEmail(loginReq.email())
                 .orElseThrow(() -> new NotRegisteredException("아이디와 비밀번호를 확인해주세요."));
 
-
     // 비밀번호 체크
     if(!passwordEncoder.matches((loginReq.password()), user.getPassword())) {
         throw new NotRegisteredException("아이디와 비밀번호를 입력해주세요.");
@@ -131,7 +130,7 @@ public class AuthService {
     @Transactional(rollbackFor = Exception.class)
     public void registration(RegistrationReq registrationReq) {
         // 유저 가입여부 확인(exist 쿼리를 사용하면 대용량 환경에서 효율이 증가)
-        if(authRepository.existByEmail(registrationReq.email())) {
+        if(authRepository.existsByEmail(registrationReq.email())) {
             throw new DuplicatedRecordException("이미 가입된 회원입니다.");
         }
 
